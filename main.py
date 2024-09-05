@@ -27,12 +27,14 @@ class Retrieval(BaseModel):
     name: str
 
 @app.post("/retrievals")
-async def post_retrieval(name: str) -> None:
+async def post_retrieval(name: str) -> Retrieval:
     tz = pytz.timezone('Europe/Paris')
     paris_now = datetime.now(tz)
 
     with open('hours.csv', 'a', encoding='utf-8') as f:
         f.write(paris_now.strftime('%Y-%m-%d %H:%M:%S') + ', ' + name.strip() + '\n')
+
+    return Retrieval(hour=paris_now, name=name)
 
 @app.get("/retrievals")
 async def get_retrievals() -> list[Retrieval]:
