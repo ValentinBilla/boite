@@ -1,5 +1,6 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
+import pytz
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -27,8 +28,11 @@ class Retrieval(BaseModel):
 
 @app.post("/retrievals")
 async def post_retrieval(name: str) -> None:
+    tz = pytz.timezone('Europe/Paris')
+    paris_now = datetime.now(tz)
+
     with open('hours.csv', 'a', encoding='utf-8') as f:
-        f.write(datetime.now().strftime('%Y-%m-%d %H:%M:%S') + ', ' + name.strip() + '\n')
+        f.write(paris_now.strftime('%Y-%m-%d %H:%M:%S') + ', ' + name.strip() + '\n')
 
 @app.get("/retrievals")
 async def get_retrievals() -> list[Retrieval]:
